@@ -5,6 +5,7 @@ machine:
     R_LIBS_USER: ~/lib/R/library
 dependencies:
   pre:
+    - mkdir -p ~/lib/R/library
     - echo "options(repos = c(CRAN='http://cran.r-project.org'))" >> ~/.Rprofile
     - Rscript -e "install.packages('devtools')"
     - docker pull rocker/r-devel
