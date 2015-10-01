@@ -1,19 +1,21 @@
 machine:
   environment:
     R_LIBS_USER: ~/lib/R/library
-test:
-  override:
-    - R CMD INSTALL --no-multiarch --with-keep.source ~/test
-    - R CMD build ~/test
-    - R CMD check ~/test/test_1.0.tar.gz --no-manual --no-build-vignettes --as-cran
-  post:
-    - mv test.Rcheck/tests/testthat.Rout* $CIRCLE_ARTIFACTS/.
-    - mv test.Rcheck/*.log $CIRCLE_ARTIFACTS/.
 dependencies:
   cache_directories:
     - "~/lib/R"
   pre:
     - mkdir -p ~/lib/R/library
     - echo "options(repos = c(CRAN='http://cran.r-project.org'))" >> ~/.Rprofile
-    - Rscript -e "install.packages(c('testthat', 'covr'))"
+    - Rscript -e "install.packages('devtools')"
+test:
+  override:
+    - R CMD INSTALL --no-multiarch --with-keep.source ~/$CIRCLE_PROJECT_REPONAME
+    - R CMD build ~/$CIRCLE_PROJECT_REPONAME
+    - R_PKG_VERSION=$(Rscript -e "devtools::as.package('.')$version")
+    - Rscript -e "p <- devtools::as.package('.'); install.packages(unique(c(p$depends, p$imports, p$suggests)))"
+    - R CMD check ~/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME\_$R_PKG_VERSION.tar.gz --no-manual --no-build-vignettes --as-cran
+  post:
     - Rscript -e 'library("covr");codecov()'
+    - mv $CIRCLE_PROJECT_REPONAME.Rcheck/tests/testthat.Rout* $CIRCLE_ARTIFACTS/.
+    - mv $CIRCLE_PROJECT_REPONAME.Rcheck/*.log $CIRCLE_ARTIFACTS/.
