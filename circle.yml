@@ -9,7 +9,7 @@ dependencies:
     - echo "options(repos = c(CRAN='http://cran.r-project.org'))" >> ~/.Rprofile
     - Rscript -e "install.packages('devtools')"
     - docker pull rocker/r-devel
-    - docker run --name circle --rm -t -v ~/$CIRCLE_PROJECT_REPONAME:/$CIRCLE_PROJECT_REPONAME rocker/r-devel bash
+    - docker run --name circle --rm -v ~/$CIRCLE_PROJECT_REPONAME:/$CIRCLE_PROJECT_REPONAME rocker/r-devel bash
 test:
   override:
     - R CMD INSTALL --no-multiarch --with-keep.source ~/$CIRCLE_PROJECT_REPONAME
