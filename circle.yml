@@ -1,0 +1,18 @@
+machine:
+  environment:
+    R_LIBS_USER: ~/lib/R/library
+test:
+  override:
+    - R CMD INSTALL --no-multiarch --with-keep.source ~/test
+    - R CMD build ~/test
+    - R CMD check ~/test/test_1.0.tar.gz --no-manual --no-build-vignettes --as-cran
+  post:
+    - mv test.Rcheck/tests/testthat.Rout* $CIRCLE_ARTIFACTS/.
+    - mv test.Rcheck/*.log $CIRCLE_ARTIFACTS/.
+dependencies:
+  cache_directories:
+    - "~/lib/R"
+  pre:
+    - mkdir -p ~/lib/R/library
+    - ./inst/bash/install-package-dependencies.sh
+    - echo "options(repos = c(CRAN='http://cran.r-project.org'))" >> ~/.Rprofile
