@@ -12,7 +12,7 @@ test:
   override:
     - R CMD INSTALL --no-multiarch --with-keep.source ~/$CIRCLE_PROJECT_REPONAME
     - R CMD build ~/$CIRCLE_PROJECT_REPONAME
-    - RPKGVERSION=`Rscript -e 'devtools::as.package(\'.\')[[\'version\']')`
+    - RPKGVERSION=`Rscript -e "devtools::as.package('.')[['version']]"`
     - Rscript -e 'p <- devtools::as.package(\'.\'); install.packages(unique(c(p$depends, p$imports, p$suggests)))'
     - R CMD check ~/$CIRCLE_PROJECT_REPONAME/$CIRCLE_PROJECT_REPONAME\_$RPKGVERSION.tar.gz --no-manual --no-build-vignettes --as-cran
   post:
