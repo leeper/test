@@ -15,4 +15,5 @@ dependencies:
   pre:
     - mkdir -p ~/lib/R/library
     - echo "options(repos = c(CRAN='http://cran.r-project.org'))" >> ~/.Rprofile
-    - Rscript -e "install.packages('testthat')"
+    - Rscript -e "install.packages(c('testthat', 'covr'))"
+    - Rscript -e 'library("covr");codecov()'
