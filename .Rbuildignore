@@ -1,0 +1,3 @@
+circle.yml
+.travis.yml
+buildcheck.sh
